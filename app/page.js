@@ -1,52 +1,87 @@
 "use client";
 
-import Button from "@/components/Button";
-import Input from "@/components/Input";
 import React from "react";
+import Navigation from "@/components/Navigation";
+import Task from "@/components/Task";
+import Button from "@/components/Button";
+import CreateModal from "@/modals/CreateModal";
+import EditModal from "@/modals/EditModal";
+import SelectComponent from "@/components/SelectComponent";
+import MenuItem from "@mui/material/MenuItem";
+import { useSelector, useDispatch } from "react-redux";
+import { updateStatus } from "@/redux/tasks/taskSlice";
 
-export default function Home() {
-  const [user, setUser] = React.useState({ username: "", password: "" });
+const Homepage = () => {
+  const [open, setOpen] = React.useState(false);
+  const [openEdit, setOpenEdit] = React.useState(false);
+  const [status, setStatus] = React.useState("");
+  const tasks = useSelector((state) => state.tasks);
+  const [renderedTasks, setRenderedTasks] = React.useState([]);
+  const [taskId, setTaskId] = React.useState("");
+  const dispatch = useDispatch();
 
-  const handleChange = (event) =>
-    setUser((prevState) => ({
-      ...prevState,
-      [event.target.name]: event.target.value,
-    }));
+  const filteredTasks = tasks?.filter((task) => task.status === status);
 
-  const onContinue = user.username && user.password;
+  React.useEffect(() => {
+    dispatch(updateStatus());
 
+    setRenderedTasks(tasks);
+  }, [tasks]);
+
+  React.useEffect(() => {
+    if (status !== "") {
+      setRenderedTasks(filteredTasks);
+    }
+    if (status === "all") {
+      setRenderedTasks(tasks);
+    }
+  }, [status]);
   return (
-    <div className="container flex flex-col justify-center items-center mt-10 pt-10">
-      <h1 className="text-center text-3xl font-bold sm:text-4xl">T.M.D</h1>
-      <div className="login-content p-3 sm:p-5 mt-5 sm:mt-14">
-        <h2 className="text-xl font-semibold opacity-90 sm:text-2xl">
-          Sign in
-        </h2>
-        <p className="font-semibold opacity-70 text-sm sm:text-base">
-          ... to continue
-        </p>
-        <form className="mt-3 w-full sm:w-[400px]">
-          <Input
-            type="text"
-            name="username"
-            value={user.username}
-            placeholder="Username"
-            onChange={handleChange}
+    <div className="homepage-content">
+      <Navigation />
+      <div className="p-4">
+        <div className="flex justify-between  mb-8">
+          <p>Tasks</p>
+          <span className="flex">
+            <SelectComponent
+              value={status}
+              label="Status"
+              width={100}
+              handleChange={(event) => setStatus(event.target.value)}
+            >
+              <MenuItem value="all">all</MenuItem>
+              <MenuItem value="completed">completed</MenuItem>
+              <MenuItem value="pending">pending</MenuItem>
+            </SelectComponent>
+            <Button
+              label="Add task"
+              className="w-[100px] ml-2 rounded-md font-semibold text-white p-2 bg-[dodgerblue] outline-none hover:opacity-80"
+              handleClick={() => setOpen(true)}
+            />
+          </span>
+        </div>
+        {renderedTasks.map((task) => (
+          <Task
+            openEditModal={() => {
+              setOpenEdit(true);
+              setTaskId(task.id);
+            }}
+            key={task.id}
+            description={task.description}
+            dueDate={task.date}
+            status={task.status}
+            title={task.title}
           />
-          <Input
-            type="password"
-            name="password"
-            value={user.password}
-            placeholder="Password"
-            onChange={handleChange}
-          />
-          <Button
-            label="Sign in"
-            // disabled={!onContinue}
-            className="border border-[#f3f3f3] rounded-md mt-10 bg-[#4875B4] text-white hover:opacity-80 outline-none p-3 w-full"
-          />
-        </form>
+        ))}
       </div>
+      <CreateModal open={open} handleClose={() => setOpen(false)} />
+      <EditModal
+        open={openEdit}
+        handleClose={() => setOpenEdit(false)}
+        id={taskId}
+      />
     </div>
   );
-}
+};
+
+export default Homepage;
