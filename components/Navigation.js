@@ -38,9 +38,10 @@ const Navigation = () => {
             "aria-labelledby": "basic-button",
           }}
         >
+          <h2 className="font-bold text-lg p-2">User 1</h2>
           <Button
             label="Sign Out"
-            className="m-2 w-[100px] rounded-md font-semibold text-white p-2 bg-[dodgerblue] outline-none hover:opacity-80"
+            className="m-2 w-[200px] rounded-md font-semibold text-white p-2 bg-[dodgerblue] outline-none hover:opacity-80"
           />
         </Menu>
       </span>
