@@ -8,12 +8,20 @@ import CreateModal from "@/modals/CreateModal";
 import EditModal from "@/modals/EditModal";
 import SelectComponent from "@/components/SelectComponent";
 import MenuItem from "@mui/material/MenuItem";
-import { tasks } from "@/components/dummy";
+import { useSelector, useDispatch } from "react-redux";
+import { updateStatus } from "@/redux/tasks/taskSlice";
 
 const Homepage = () => {
   const [open, setOpen] = React.useState(false);
   const [openEdit, setOpenEdit] = React.useState(false);
   const [status, setStatus] = React.useState("");
+  const tasks = useSelector((state) => state.tasks);
+  const [taskId, setTaskId] = React.useState("");
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    dispatch(updateStatus());
+  }, [tasks]);
 
   return (
     <div className="homepage-content">
@@ -38,19 +46,26 @@ const Homepage = () => {
             />
           </span>
         </div>
-        {tasks.map((task, index) => (
+        {tasks.map((task) => (
           <Task
-            openEditModal={() => setOpenEdit(true)}
-            key={index}
+            openEditModal={() => {
+              setOpenEdit(true);
+              setTaskId(task.id);
+            }}
+            key={task.id}
             description={task.description}
-            dueDate={task.dueDate}
+            dueDate={task.date}
             status={task.status}
             title={task.title}
           />
         ))}
       </div>
       <CreateModal open={open} handleClose={() => setOpen(false)} />
-      <EditModal open={openEdit} handleClose={() => setOpenEdit(false)} />
+      <EditModal
+        open={openEdit}
+        handleClose={() => setOpenEdit(false)}
+        id={taskId}
+      />
     </div>
   );
 };

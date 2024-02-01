@@ -3,6 +3,8 @@
 import React from "react";
 import Modal from "./Modal";
 import Input from "@/components/Input";
+import { useDispatch } from "react-redux";
+import { createTask } from "@/redux/tasks/taskSlice";
 
 const CreateModal = ({ open, handleClose }) => {
   const [task, setTask] = React.useState({
@@ -10,12 +12,18 @@ const CreateModal = ({ open, handleClose }) => {
     description: "",
     date: "",
   });
+  const dispatch = useDispatch();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setTask((prevState) => ({ ...prevState, [name]: value }));
   };
-  const onConfirm = () => console.log(task, ">>>>>");
+  const onConfirm = () => {
+    const { title, description, date } = task;
+    dispatch(createTask({ title, description, date }));
+    setTask({ title: "", description: "", date: "" });
+    handleClose();
+  };
 
   return (
     <Modal
