@@ -8,15 +8,17 @@ import Button from "./Button";
 const Navigation = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   return (
-    <nav className="m-2 flex justify-between">
-      <h2 className="font-bold text-2xl sm:text-4xl">T.M.D</h2>
+    <nav className="m-2 flex justify-between nav-container p-2">
+      <h2 className="font-bold text-2xl sm:text-4xl opacity-85">T.M.D</h2>
       <span>
         <Image
           src="/images/user.jpg"
