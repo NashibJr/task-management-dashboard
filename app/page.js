@@ -42,7 +42,7 @@ export default function Home() {
           />
           <Button
             label="Sign in"
-            disabled={!onContinue}
+            // disabled={!onContinue}
             className="border border-[#f3f3f3] rounded-md mt-10 bg-[#4875B4] text-white hover:opacity-80 outline-none p-3 w-full"
           />
         </form>
