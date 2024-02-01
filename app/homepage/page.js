@@ -16,13 +16,26 @@ const Homepage = () => {
   const [openEdit, setOpenEdit] = React.useState(false);
   const [status, setStatus] = React.useState("");
   const tasks = useSelector((state) => state.tasks);
+  const [renderedTasks, setRenderedTasks] = React.useState([]);
   const [taskId, setTaskId] = React.useState("");
   const dispatch = useDispatch();
 
+  const filteredTasks = tasks?.filter((task) => task.status === status);
+
   React.useEffect(() => {
     dispatch(updateStatus());
+
+    setRenderedTasks(tasks);
   }, [tasks]);
 
+  React.useEffect(() => {
+    if (status !== "") {
+      setRenderedTasks(filteredTasks);
+    }
+    if (status === "all") {
+      setRenderedTasks(tasks);
+    }
+  }, [status]);
   return (
     <div className="homepage-content">
       <Navigation />
@@ -36,6 +49,7 @@ const Homepage = () => {
               width={100}
               handleChange={(event) => setStatus(event.target.value)}
             >
+              <MenuItem value="all">all</MenuItem>
               <MenuItem value="completed">completed</MenuItem>
               <MenuItem value="pending">pending</MenuItem>
             </SelectComponent>
@@ -46,7 +60,7 @@ const Homepage = () => {
             />
           </span>
         </div>
-        {tasks.map((task) => (
+        {renderedTasks.map((task) => (
           <Task
             openEditModal={() => {
               setOpenEdit(true);

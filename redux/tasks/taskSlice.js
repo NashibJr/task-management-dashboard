@@ -8,14 +8,14 @@ const initialState = {
       title: "task 1",
       description: "This is task number 1",
       date: "2024-02-11",
-      status: "",
+      status: "pending",
     },
     {
       id: Math.round(Math.random() * 1000000),
       title: "task 5",
       description: "This is task number 5",
       date: "2023-01-01",
-      status: "",
+      status: "completed",
     },
   ],
 };
@@ -31,7 +31,7 @@ const taskSlice = createSlice({
         title,
         description,
         date,
-        status: "",
+        status: "pending",
       };
 
       state.tasks.push(newTask);
